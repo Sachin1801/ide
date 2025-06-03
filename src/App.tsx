@@ -6,7 +6,7 @@ import REPL from './components/REPL'
 function App() {
   return (
     // Add the provider to your app
-    <PythonProvider>
+    <PythonProvider packages={{ official: ['numpy', 'pandas', 'matplotlib', 'biopython'] }}>
       <Codeblock />
       <REPL />
     </PythonProvider>
