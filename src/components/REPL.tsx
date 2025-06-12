@@ -1,10 +1,14 @@
-import { useEffect, useState } from 'react'
+// TODO: scrolling, multiline input, clipboard, responsive sizing, indentation
+// Handling just outpting 2+2 or 'hello' for example
+
+import { useEffect, useState, useRef } from 'react'
 import { usePythonConsole } from 'react-py'
 import { ConsoleState } from 'react-py/dist/types/Console'
 
 export default function REPL() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState<string[]>([])
+  const [history, setHistory] = useState<{type: 'input' | 'output', content: string}[]>([])
+  const terminalRef = useRef<HTMLDivElement>(null)
 
   const {
     runPython,
@@ -17,51 +21,107 @@ export default function REPL() {
   } = usePythonConsole()
 
   useEffect(() => {
-    setOutput((prev) => [...prev, stdout])
+    if (banner) {
+      setHistory([{ type: 'output', content: banner }])
+    }
+  }, [banner])
+
+  useEffect(() => {
+    if (stdout) {
+      setHistory(prev => [...prev, { type: 'output', content: stdout }])
+    }
   }, [stdout])
 
   useEffect(() => {
-    setOutput((prev) => [...prev, stderr])
+    if (stderr) {
+      setHistory(prev => [...prev, { type: 'output', content: stderr }])
+    }
   }, [stderr])
+
+  useEffect(() => {
+    // Scroll to bottom whenever history changes
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight
+    }
+  }, [history])
 
   function getPrompt() {
     return consoleState === ConsoleState.incomplete ? '... ' : '>>> '
   }
 
   function run() {
-    setOutput((prev) => [...prev, getPrompt() + input + '\n'])
+    if (!input.trim()) return
+    
+    // Add input to history
+    setHistory(prev => [...prev, { type: 'input', content: getPrompt() + input }])
+    
     runPython(input)
+    setInput('') // Clear input after running
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      if (!isLoading && !isRunning) {
+        run()
+      }
+    }
   }
 
   return (
-    <>
-      {isLoading ? <p>Loading...</p> : <p>Ready!</p>}
-      <p>
-        <b>Output</b>
-      </p>
-      <pre>
-        {banner}
-        <br />
-        {output.join('')}
-      </pre>
-      <pre>
-        {getPrompt()}
-        <form>
-          <textarea
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter your code here"
-          />
-          <input
-            type="submit"
-            value={!isRunning ? 'Run' : 'Running...'}
-            disabled={isLoading || isRunning}
-            onClick={(e) => {
-              e.preventDefault()
-              run()
+    <div className="terminal-container">
+      {isLoading ? <p>Loading Python...</p> : null}
+      
+      <div 
+        ref={terminalRef}
+        className="terminal"
+        style={{
+          fontFamily: 'monospace',
+          backgroundColor: '#1e1e1e',
+          color: '#f0f0f0',
+          padding: '1rem',
+          height: '500px',
+          overflowY: 'auto',
+          borderRadius: '4px'
+        }}
+      >
+        {history.map((item, index) => (
+          <div 
+            key={index} 
+            style={{
+              whiteSpace: 'pre-wrap',
+              color: item.type === 'input' ? '#f0f0f0' : 
+                     item.content.includes('Error') ? '#ff5555' : '#cccccc'
             }}
+          >
+            {item.content}
+          </div>
+        ))}
+        
+        <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+          <span style={{ color: '#4caf50' }}>{getPrompt()}</span>
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={isLoading || isRunning ? '' : 'Enter Python code'}
+            disabled={isLoading || isRunning}
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              color: '#f0f0f0',
+              border: 'none',
+              outline: 'none',
+              resize: 'none',
+              fontFamily: 'monospace',
+              overflow: 'hidden',
+              minHeight: '1.5em',
+              height: 'auto'
+            }}
+            rows={1}
           />
-        </form>
-      </pre>
-    </>
+        </div>
+      </div>
+    </div>
   )
 }
