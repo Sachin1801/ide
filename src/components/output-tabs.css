@@ -1,0 +1,9 @@
+button {
+  padding: 0.5rem 1rem;
+  background: #e0e4e7;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+  margin-right: 1rem;
+}
