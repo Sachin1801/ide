@@ -1,5 +1,4 @@
 // TODO: scrolling, multiline input, clipboard, responsive sizing, indentation
-// Handling just outpting 2+2 or 'hello' for example
 
 import { useEffect, useState, useRef } from 'react'
 import { usePythonConsole } from 'react-py'
@@ -19,6 +18,21 @@ export default function REPL() {
     banner,
     consoleState
   } = usePythonConsole()
+
+  // Detect if input is an expression (returns value) vs statement
+  const isExpression = (code: string) => {
+    const trimmed = code.trim()
+    return (
+      !trimmed.startsWith('print(') &&
+      !trimmed.startsWith('import ') &&
+      !trimmed.startsWith('from ') &&
+      !trimmed.startsWith('def ') &&
+      !trimmed.startsWith('class ') &&
+      !trimmed.includes('=') &&
+      trimmed.length > 0
+    )
+  }
+
 
   useEffect(() => {
     if (banner) {
@@ -51,12 +65,21 @@ export default function REPL() {
 
   function run() {
     if (!input.trim()) return
+
+    const codeToRun = isExpression(input) 
+      ? `print(${input})`  // Wrap expressions in print()
+      : input             // Leave statements as-is
     
     // Add input to history
-    setHistory(prev => [...prev, { type: 'input', content: getPrompt() + input }])
+    setHistory(prev => [...prev, 
+      { type: 'input', content: getPrompt() + input },
+      { type: 'output', content: '' } // Placeholder for output
+    ])
+
+    console.log(`Running code: ${codeToRun}`)
     
-    runPython(input)
-    setInput('') // Clear input after running
+    runPython(codeToRun)
+    setInput('')
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
