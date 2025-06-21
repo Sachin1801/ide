@@ -104,7 +104,7 @@ export default function REPL() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={isLoading || isRunning ? '' : 'Enter Python code'}
+            placeholder={''}
             disabled={isLoading || isRunning}
             style={{
               flex: 1,
