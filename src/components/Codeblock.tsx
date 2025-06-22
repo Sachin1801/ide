@@ -30,20 +30,26 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
             onRun(code);
           }}
           disabled={isLoading || isRunning}
-          className="btn btn-primary"
+          style={{
+            backgroundColor: '#75D97A'
+          }}
+          className="btn"
           title="Run code"
         >
-          <i className="bi bi-play-fill"></i>
+          <i className="bi bi-play-fill" style={{ color: 'white', fontSize: '1.25rem' }}></i>
         </button>
 
         {/* Stop Button */}
         <button
           onClick={(e) => e.preventDefault()}
           disabled={!isRunning}
-          className="btn btn-danger"
+          style={{
+            backgroundColor: '#FF7F3F',
+          }}
+          className="btn"
           title="Stop execution"
         >
-          <i className="bi bi-stop-fill"></i>
+          <i className="bi bi-stop-fill" style={{ color: 'white', fontSize: '1.25rem'}}></i>
         </button>
 
         {/* Copy Button */}
@@ -52,7 +58,7 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           className="btn btn-outline-secondary"
           title="Copy code"
         >
-          <i className="bi bi-clipboard"></i>
+          <i className="bi bi-clipboard" style = {{fontSize: '1.25rem'}}></i>
         </button>
 
         {/* Clear Button */}
@@ -61,7 +67,7 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           className="btn btn-outline-danger"
           title="Clear editor"
         >
-          <i className="bi bi-trash"></i>
+          <i className="bi bi-trash" style = {{fontSize: '1.25rem'}}></i>
         </button>
       </div>
 
