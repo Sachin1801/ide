@@ -6,7 +6,7 @@ interface OutputTabsProps {
   stdout?: string;
   stderr?: string;
 }
-
+// TO-DO: add loading in console output tab
 export default function OutputTabs({ stdout, stderr }: OutputTabsProps) {
   const [activeTab, setActiveTab] = useState('output');
 

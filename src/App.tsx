@@ -20,7 +20,7 @@ print(my_seq)`;
 function App() {
 
   const [code, setCode] = useState(DEFAULT_CODE);
-  const { runPython, stdout, stderr, isLoading, isRunning } = usePython();
+  const { runPython, stdout, stderr, isLoading, isRunning, interruptExecution} = usePython();
 
   return (
     <PythonProvider packages={{ official: ['numpy', 'pandas', 'matplotlib', 'biopython'] }}>
@@ -30,6 +30,7 @@ function App() {
             code={code}
             onCodeChange={setCode}
             onRun={() => runPython(code)}
+            onInterrupt={interruptExecution}
             isRunning={isRunning}
             isLoading={isLoading}
           />

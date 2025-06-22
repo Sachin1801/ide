@@ -9,11 +9,12 @@ type CodeblockProps = {
   code: string;
   onCodeChange: (value: string) => void;
   onRun: (code: string) => void;
+  onInterrupt: () => void;
   isRunning: boolean;
   isLoading: boolean;
 };
 
-export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoading }: CodeblockProps) {
+export default function Codeblock({ code, onCodeChange, onRun, onInterrupt, isRunning, isLoading }: CodeblockProps) {
   const handleCopy = () => navigator.clipboard.writeText(code);
   const handleClear = () => onCodeChange('');
 
@@ -41,7 +42,11 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
 
         {/* Stop Button */}
         <button
-          onClick={(e) => e.preventDefault()}
+          onClick={(e) => {
+            e.preventDefault();
+            console.log('Interrupt signal sent');
+            onInterrupt();
+          }}
           disabled={!isRunning}
           style={{
             backgroundColor: '#FF7F3F',
@@ -49,7 +54,7 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           className="btn"
           title="Stop execution"
         >
-          <i className="bi bi-stop-fill" style={{ color: 'white', fontSize: '1.25rem'}}></i>
+          <i className="bi bi-stop-fill" style={{ color: 'white', fontSize: '1.25rem' }}></i>
         </button>
 
         {/* Copy Button */}
@@ -58,7 +63,7 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           className="btn btn-outline-secondary"
           title="Copy code"
         >
-          <i className="bi bi-clipboard" style = {{fontSize: '1.25rem'}}></i>
+          <i className="bi bi-clipboard" style={{ fontSize: '1.25rem' }}></i>
         </button>
 
         {/* Clear Button */}
@@ -67,7 +72,7 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           className="btn btn-outline-danger"
           title="Clear editor"
         >
-          <i className="bi bi-trash" style = {{fontSize: '1.25rem'}}></i>
+          <i className="bi bi-trash" style={{ fontSize: '1.25rem' }}></i>
         </button>
       </div>
 
