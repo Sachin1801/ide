@@ -13,9 +13,28 @@ type CodeblockProps = {
   isLoading: boolean;
 };
 
-export default function Codeblock({code, onCodeChange, onRun, isRunning, isLoading}: CodeblockProps) {
+export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoading }: CodeblockProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          onRun(code);
+        }}
+        disabled={isLoading || isRunning}
+        style={{
+          padding: '0.5rem 1rem',
+          background: isLoading || isRunning ? '#ccc' : '#007bff',
+          color: 'white',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          alignSelf: 'flex-start'
+        }}
+      >
+        {isLoading ? 'Initializing...' : isRunning ? 'Running...' : 'Run Code'}
+      </button>
 
       <div style={{ border: '1px solid #ddd', borderRadius: '4px' }}>
         <AceEditor
@@ -40,24 +59,7 @@ export default function Codeblock({code, onCodeChange, onRun, isRunning, isLoadi
         />
       </div>
 
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          onRun(code);
-        }}
-        disabled={isLoading || isRunning}
-        style={{
-          padding: '0.5rem 1rem',
-          background: isLoading || isRunning ? '#ccc' : '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          alignSelf: 'flex-start'
-        }}
-      >
-        {isLoading ? 'Initializing...' : isRunning ? 'Running...' : 'Run Code'}
-      </button>
+
     </div>
   );
 }

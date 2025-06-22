@@ -24,8 +24,8 @@ function App() {
 
   return (
     <PythonProvider packages={{ official: ['numpy', 'pandas', 'matplotlib', 'biopython'] }}>
-      <div style={{ display: 'flex', gap: '2rem', padding: '1rem' }}>
-        <div style={{ width: '50%' }}>
+      <div style={{ display: 'flex', gap: '2rem', padding: '1rem', }}>
+        <div style={{ width: '50%', background: '#f8f9fa'}}>
           <Codeblock
             code={code}
             onCodeChange={setCode}
