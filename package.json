@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -16,6 +17,8 @@
     "@xterm/addon-web-links": "^0.11.0",
     "@xterm/xterm": "^5.5.0",
     "ace-builds": "^1.41.0",
+    "bootstrap": "^5.3.7",
+    "bootstrap-icons": "^1.13.1",
     "react": "^19.1.0",
     "react-ace": "^14.0.1",
     "react-dom": "^19.1.0",

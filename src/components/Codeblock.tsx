@@ -14,27 +14,57 @@ type CodeblockProps = {
 };
 
 export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoading }: CodeblockProps) {
+  const handleCopy = () => navigator.clipboard.writeText(code);
+  const handleClear = () => onCodeChange('');
+
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-      <button
-        onClick={(e) => {
-          e.preventDefault();
-          onRun(code);
-        }}
-        disabled={isLoading || isRunning}
-        style={{
-          padding: '0.5rem 1rem',
-          background: isLoading || isRunning ? '#ccc' : '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          cursor: 'pointer',
-          alignSelf: 'flex-start'
-        }}
-      >
-        {isLoading ? 'Initializing...' : isRunning ? 'Running...' : 'Run Code'}
-      </button>
+      <div className="btn-group" role="group">
+        {/* Run Button */}
+
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            onRun(code);
+          }}
+          disabled={isLoading || isRunning}
+          className="btn btn-primary"
+          title="Run code"
+        >
+          <i className="bi bi-play-fill"></i>
+        </button>
+
+        {/* Stop Button */}
+        <button
+          onClick={(e) => e.preventDefault()}
+          disabled={!isRunning}
+          className="btn btn-danger"
+          title="Stop execution"
+        >
+          <i className="bi bi-stop-fill"></i>
+        </button>
+
+        {/* Copy Button */}
+        <button
+          onClick={handleCopy}
+          className="btn btn-outline-secondary"
+          title="Copy code"
+        >
+          <i className="bi bi-clipboard"></i>
+        </button>
+
+        {/* Clear Button */}
+        <button
+          onClick={handleClear}
+          className="btn btn-outline-danger"
+          title="Clear editor"
+        >
+          <i className="bi bi-trash"></i>
+        </button>
+      </div>
+
 
       <div style={{ border: '1px solid #ddd', borderRadius: '4px' }}>
         <AceEditor
@@ -45,7 +75,6 @@ export default function Codeblock({ code, onCodeChange, onRun, isRunning, isLoad
           name="python-editor"
           fontSize={14}
           width="100%"
-          height="300px"
           showPrintMargin={true}
           showGutter={true}
           highlightActiveLine={true}
