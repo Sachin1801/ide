@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import REPL from './REPL';
+import { COLORS} from '../colors';
 import './output-tabs.css';
 
 interface OutputTabsProps {
@@ -11,9 +12,9 @@ export default function OutputTabs({ stdout, stderr }: OutputTabsProps) {
   const [activeTab, setActiveTab] = useState('output');
 
   return (
-    <div>
+    <div style={{ height: '100%', border: '1px solid' + COLORS['main-bg'], backgroundColor: 'white'}}>
       {/* Tab buttons */}
-      <div style={{marginBottom: '1rem'}}>
+      <div style={{marginTop: '0.2rem', marginLeft: '0.5rem'}}>
         <button onClick={() => setActiveTab('output')}>Output</button>
         <button onClick={() => setActiveTab('terminal')}>Terminal</button>
       </div>

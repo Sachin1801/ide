@@ -1,6 +1,8 @@
 import { PythonProvider } from 'react-py'
 import Codeblock from './components/Codeblock'
 import OutputTabs from './components/OutputTabs'
+import Buttons from './components/Buttons'
+import { COLORS} from './colors';
 import { useState } from 'react';
 import { usePython } from 'react-py';
 
@@ -20,19 +22,26 @@ print(my_seq)`;
 function App() {
 
   const [code, setCode] = useState(DEFAULT_CODE);
-  const { runPython, stdout, stderr, isLoading, isRunning, interruptExecution} = usePython();
+  const { runPython, stdout, stderr, isLoading, isRunning, interruptExecution } = usePython();
 
   return (
     <PythonProvider packages={{ official: ['numpy', 'pandas', 'matplotlib', 'biopython'] }}>
-      <div style={{ display: 'flex', gap: '2rem', padding: '1rem', }}>
+      <div style={{ padding: '1rem'}}>
+        <Buttons
+          code={code}
+          onCodeChange={setCode}
+          onRun={runPython}
+          onInterrupt={interruptExecution}
+          isRunning={isRunning}
+          isLoading={isLoading}
+        />
+      </div>
+      <div style={{ display: 'flex', padding: '0.5rem', gap:'0.1rem', backgroundColor: COLORS['main-bg'], margin: '0 1rem'}}>
+
         <div style={{ width: '50%'}}>
           <Codeblock
             code={code}
             onCodeChange={setCode}
-            onRun={() => runPython(code)}
-            onInterrupt={interruptExecution}
-            isRunning={isRunning}
-            isLoading={isLoading}
           />
         </div>
         <div style={{ width: '50%' }}>
