@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import REPL from './REPL';
-import { COLORS} from '../colors';
-import './output-tabs.css';
+import { COLORS } from '../colors';
+import styles from './output-tabs.module.css';
 
 interface OutputTabsProps {
   stdout?: string;
@@ -12,11 +12,16 @@ export default function OutputTabs({ stdout, stderr }: OutputTabsProps) {
   const [activeTab, setActiveTab] = useState('output');
 
   return (
-    <div style={{ height: '100%', border: '1px solid' + COLORS['main-bg'], backgroundColor: 'white'}}>
+    <div style={{ height: '100%', border: '1px solid' + COLORS['main-bg'], backgroundColor: 'white' }}>
       {/* Tab buttons */}
-      <div style={{marginTop: '0.2rem', marginLeft: '0.5rem'}}>
-        <button onClick={() => setActiveTab('output')}>Output</button>
-        <button onClick={() => setActiveTab('terminal')}>Terminal</button>
+      <div style={{
+        marginTop: '0.2rem',
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '2rem',
+      }}>
+        <button className={styles.regButton} onClick={() => setActiveTab('output')}>Output</button>
+        <button className={styles.regButton} onClick={() => setActiveTab('terminal')}>Terminal</button>
       </div>
 
       {/* Tab content */}

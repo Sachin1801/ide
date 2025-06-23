@@ -1,0 +1,13 @@
+.regButton {
+  padding: 0.5rem 2rem;
+  background: var(--main-bg);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 0.5rem;
+}

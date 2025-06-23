@@ -1,3 +1,4 @@
+import styles from './buttons.module.css';
 type ButtonProps = {
     code: string;
     onCodeChange: (value: string) => void;
@@ -13,9 +14,8 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
     const handleClear = () => onCodeChange('');
 
     return (
-        <div className="btn-group" role="group">
+        <div className={styles.btnGroup}>
             {/* Run Button */}
-
             <button
                 onClick={(e) => {
                     e.preventDefault();
@@ -25,7 +25,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 style={{
                     backgroundColor: '#75D97A'
                 }}
-                className="btn"
+                className={styles.regButton}
                 title="Run code"
             >
                 <i className="bi bi-play-fill" style={{ color: 'white', fontSize: '1.25rem' }}></i>
@@ -42,7 +42,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 style={{
                     backgroundColor: '#FF7F3F',
                 }}
-                className="btn"
+                className={styles.regButton}
                 title="Stop execution"
             >
                 <i className="bi bi-stop-fill" style={{ color: 'white', fontSize: '1.25rem' }}></i>
@@ -51,7 +51,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
             {/* Copy Button */}
             <button
                 onClick={handleCopy}
-                className="btn btn-outline-secondary"
+                className={styles.regButton}
                 title="Copy code"
             >
                 <i className="bi bi-clipboard" style={{ fontSize: '1.25rem' }}></i>
@@ -60,7 +60,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
             {/* Clear Button */}
             <button
                 onClick={handleClear}
-                className="btn btn-outline-danger"
+                className={styles.regButton}
                 title="Clear editor"
             >
                 <i className="bi bi-trash" style={{ fontSize: '1.25rem' }}></i>

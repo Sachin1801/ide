@@ -1,9 +1,8 @@
-button {
-  padding: 0.5rem 2rem;
+.regButton {
+  padding: 0.5rem 4rem;
   background: var(--main-bg);
   border: none;
   border-radius: 4px;
   cursor: pointer;
   align-self: flex-start;
-  margin-right: 0.5rem;
 }
