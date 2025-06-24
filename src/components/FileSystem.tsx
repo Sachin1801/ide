@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 export const FILE_TYPES = ['py', 'txt', 'csv', 'png', 'jpg'] as const;
 
+//TO-DO: fix error loading file when file loading.
 
 type FileItem = {
     id: string;
