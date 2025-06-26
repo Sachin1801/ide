@@ -92,7 +92,7 @@ export default function FileSystem({
                         placeholder="new_script.py"
                         style={{ width: '100%' }}
                     />
-                    <small style={{ color: '#6c757d' }}>Only .py files can be created</small>
+                    <small style={{ color: 'var(--muted-text)' }}>Only .py files can be created</small>
                 </div>
             )}
 
@@ -105,7 +105,7 @@ export default function FileSystem({
                             alignItems: 'center',
                             padding: '0.25rem 0',
                             cursor: 'pointer',
-                            backgroundColor: currentFile === file.path ? '#e9ecef' : 'transparent'
+                            backgroundColor: currentFile === file.path ? 'var(--highlight-bg)' : 'transparent'
                         }}
                         onClick={() => onSelectFile(file.path, file.type)}
                     >

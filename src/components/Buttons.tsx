@@ -1,4 +1,7 @@
 import styles from './buttons.module.css';
+import { useTheme } from '../ThemeContext';
+import ThemeSwitch from './ThemeSwitch';
+
 type ButtonProps = {
     code: string;
     onCodeChange: (value: string) => void;
@@ -13,6 +16,20 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
     const handleCopy = () => navigator.clipboard.writeText(code);
     const handleClear = () => onCodeChange('');
 
+    const { theme } = useTheme();
+
+    const commonButtonStyle: React.CSSProperties = theme === 'dark'
+        ? {
+            border: '1px solid var(--panel-border)',
+            color: 'var(--text-color)',
+            boxShadow: '0 0 4px rgba(255,255,255,0.4)'
+          }
+        : {};
+
+    const iconStyle = theme === 'dark'
+        ? { fontSize: '1.25rem', color: 'var(--text-color)', filter: 'drop-shadow(0 0 2px #ffffff)' }
+        : { fontSize: '1.25rem' };
+
     return (
         <div className={styles.btnGroup}>
             {/* Run Button */}
@@ -23,7 +40,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 }}
                 disabled={isLoading || isRunning}
                 style={{
-                    backgroundColor: '#75D97A'
+                    backgroundColor: 'var(--button-run-bg)'
                 }}
                 className={styles.regButton}
                 title="Run code"
@@ -40,7 +57,7 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 }}
                 disabled={!isRunning}
                 style={{
-                    backgroundColor: '#FF7F3F',
+                    backgroundColor: 'var(--button-stop-bg)',
                 }}
                 className={styles.regButton}
                 title="Stop execution"
@@ -53,8 +70,9 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 onClick={handleCopy}
                 className={styles.regButton}
                 title="Copy code"
+                style={commonButtonStyle}
             >
-                <i className="bi bi-clipboard" style={{ fontSize: '1.25rem' }}></i>
+                <i className="bi bi-clipboard" style={iconStyle}></i>
             </button>
 
             {/* Clear Button */}
@@ -62,9 +80,15 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
                 onClick={handleClear}
                 className={styles.regButton}
                 title="Clear editor"
+                style={commonButtonStyle}
             >
-                <i className="bi bi-trash" style={{ fontSize: '1.25rem' }}></i>
+                <i className="bi bi-trash" style={iconStyle}></i>
             </button>
+
+            {/* Theme Toggle Switch */}
+            <div style={{ marginLeft: '0.5rem' }}>
+              <ThemeSwitch />
+            </div>
         </div>
     )
 }

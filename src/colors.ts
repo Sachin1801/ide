@@ -1,4 +1,4 @@
 export const COLORS = {
-   'main-bg': '#e0e4e7',
+   'main-bg': 'var(--main-bg)',
   // ...
 } as const;
