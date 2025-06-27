@@ -2,6 +2,7 @@ import { PythonProvider } from 'react-py'
 import Codeblock from './components/Codeblock'
 import OutputTabs from './components/OutputTabs'
 import Buttons from './components/Buttons'
+import ThemeSwitch from './components/ThemeSwitch'
 import { COLORS } from './colors';
 import { useState, useEffect } from 'react';
 import { usePython } from 'react-py';
@@ -65,8 +66,8 @@ function App() {
       <div style={{ display: 'flex', height: '100vh' }}>
         {/* Main Content Area */}
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-          {/* Action Buttons */}
-          <div style={{ padding: '1rem' }}>
+          {/* Toolbar */}
+          <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Buttons
               code={code}
               onCodeChange={setCode}
@@ -75,6 +76,9 @@ function App() {
               isRunning={isRunning}
               isLoading={isLoading}
             />
+            <div style={{ marginRight: '1rem' }}>
+              <ThemeSwitch />
+            </div>
           </div>
 
           {/* Editor and Output */}

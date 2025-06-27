@@ -1,6 +1,5 @@
 import styles from './buttons.module.css';
 import { useTheme } from '../ThemeContext';
-import ThemeSwitch from './ThemeSwitch';
 
 type ButtonProps = {
     code: string;
@@ -84,11 +83,6 @@ export default function Buttons({ code, onCodeChange, onRun, onInterrupt, isRunn
             >
                 <i className="bi bi-trash" style={iconStyle}></i>
             </button>
-
-            {/* Theme Toggle Switch */}
-            <div style={{ marginLeft: '0.5rem' }}>
-              <ThemeSwitch />
-            </div>
         </div>
     )
 }
