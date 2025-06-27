@@ -1,136 +1,65 @@
-import { useState, useEffect } from 'react';
+import { Tab } from '@headlessui/react';
+import clsx from 'clsx';
 
-export const FILE_TYPES = ['py', 'txt', 'csv', 'png', 'jpg'] as const;
+interface FileTab {
+  name: string;
+  code: string;
+}
 
-//TO-DO: fix error loading file when file loading.
-
-type FileItem = {
-    id: string;
-    name: string;
-    path: string;
-    type: typeof FILE_TYPES[number];
-};
-
+interface FileSystemProps {
+  files: FileTab[];
+  activeFile: string;
+  onFileSelect: (name: string) => void;
+  onAddFile: () => void;
+  onRemoveFile: (name: string) => void;
+}
 
 export default function FileSystem({
-    onSelectFile,
-    currentFile,
-    pythonFS
-}: {
-    onSelectFile: (path: string, type: typeof FILE_TYPES[number]) => void;
-    currentFile: string;
-    pythonFS: {
-        readFile: (name: string) => Promise<void> | undefined;
-        writeFile: (name: string, data: string | Uint8Array) => Promise<void> | undefined;
-    };
-}) {
-    const [files, setFiles] = useState<FileItem[]>([
-        { id: '1', name: 'main.py', path: '/main.py', type: 'py' },
-    ]);
-
-    const [newFileName, setNewFileName] = useState('');
-    const [showNewFileInput, setShowNewFileInput] = useState(false);
-
-    // Initialize with main.py selected
-    useEffect(() => {
-        onSelectFile('/main.py', 'py');
-    }, [onSelectFile]);
-
-    const createFile = async () => {
-        const fileName = newFileName.endsWith('.py') ? newFileName : `${newFileName}.py`;
-        const filePath = `/${fileName}`;
-
-        await pythonFS.writeFile(filePath, '# New Python file\n');
-        setFiles([...files, {
-            id: Date.now().toString(),
-            name: fileName,
-            path: filePath,
-            type: 'py'
-        }]);
-        setNewFileName('');
-        setShowNewFileInput(false);
-    };
-
-    const getFileIcon = (type: string) => {
-        switch (type) {
-            case 'py': return <i className="bi bi-filetype-py"></i>;
-            case 'txt': return <i className="bi bi-filetype-txt"></i>;
-            case 'csv': return <i className="bi bi-filetype-csv"></i>;
-            case 'png': return <i className="bi bi-filetype-png"></i>;
-            case 'jpg': return <i className="bi bi-filetype-jpg"></i>;
-            default: return <i className="bi bi-file-earmark"></i>;
-        }
-    };
-
-    return (
-        <div>
-            <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '0.5rem'
-            }}>
-                <div style={{ fontWeight: 'bold' }}>Files</div>
-                <button
-                    onClick={() => setShowNewFileInput(true)}
-                    title="New Python file"
-                >
-                    <i className="bi bi-file-plus"></i>
-                </button>
-            </div>
-
-            {showNewFileInput && (
-                <div style={{ marginBottom: '0.5rem' }}>
-                    <input
-                        autoFocus
-                        value={newFileName}
-                        onChange={(e) => setNewFileName(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter') createFile();
-                            if (e.key === 'Escape') setShowNewFileInput(false);
-                        }}
-                        placeholder="new_script.py"
-                        style={{ width: '100%' }}
-                    />
-                    <small style={{ color: '#6c757d' }}>Only .py files can be created</small>
-                </div>
-            )}
-
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {files.map((file) => (
-                    <div
-                        key={file.id}
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            padding: '0.25rem 0',
-                            cursor: 'pointer',
-                            backgroundColor: currentFile === file.path ? '#e9ecef' : 'transparent'
-                        }}
-                        onClick={() => onSelectFile(file.path, file.type)}
-                    >
-                        <span style={{ marginRight: '0.5rem' }}>
-                            {getFileIcon(file.type)}
-                        </span>
-                        <span style={{ flex: 1 }}>{file.name}</span>
-                        {file.type === 'py' && file.path !== '/main.py' && (
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    pythonFS.writeFile(file.path, '');
-                                    setFiles(files.filter(f => f.id !== file.id));
-                                    if (currentFile === file.path) {
-                                        onSelectFile('/main.py', 'py');
-                                    }
-                                }}
-                                title="Delete file"
-                            >
-                                <i className="bi bi-trash"></i>
-                            </button>
-                        )}
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
+  files,
+  activeFile,
+  onFileSelect,
+  onAddFile,
+  onRemoveFile,
+}: FileSystemProps) {
+  return (
+    <div className="flex flex-col">
+      <Tab.Group>
+        <Tab.List className="flex items-center gap-1 border-b border-neutral-200 bg-white px-2">
+          {files.map((file) => (
+            <Tab
+              key={file.name}
+              className={({ selected }) =>
+                clsx(
+                  'group flex items-center gap-2 rounded-t-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'focus:outline-none focus:ring-2 focus:ring-blue-500',
+                  selected
+                    ? 'bg-blue-50 text-blue-600 border-b-2 border-blue-500'
+                    : 'text-neutral-500 hover:bg-neutral-100 hover:text-neutral-700'
+                )
+              }
+              onClick={() => onFileSelect(file.name)}
+            >
+              <i className="bi bi-filetype-py text-base"></i>
+              <span className="truncate max-w-[120px]">{file.name}</span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemoveFile(file.name);
+                }}
+                className="ml-1 opacity-0 transition-opacity group-hover:opacity-70 hover:opacity-100"
+              >
+                <i className="bi bi-x text-sm"></i>
+              </button>
+            </Tab>
+          ))}
+          <button
+            onClick={onAddFile}
+            className="ml-1 flex items-center justify-center rounded-full p-1 text-neutral-500 hover:bg-neutral-100 hover:text-blue-600"
+          >
+            <i className="bi bi-plus-lg text-sm"></i>
+          </button>
+        </Tab.List>
+      </Tab.Group>
+    </div>
+  );
 }
