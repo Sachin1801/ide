@@ -100,8 +100,8 @@ export default function REPL() {
         className="terminal"
         style={{
           fontFamily: 'monospace',
-          backgroundColor: '#1e1e1e',
-          color: '#f0f0f0',
+          backgroundColor: 'var(--terminal-bg)',
+          color: 'var(--terminal-text)',
           padding: '1rem',
           height: '500px',
           overflowY: 'auto',
@@ -113,8 +113,8 @@ export default function REPL() {
             key={index} 
             style={{
               whiteSpace: 'pre-wrap',
-              color: item.type === 'input' ? '#f0f0f0' : 
-                     item.content.includes('Error') ? '#ff5555' : '#cccccc'
+              color: item.type === 'input' ? 'var(--terminal-text)' : 
+                     item.content.includes('Error') ? 'var(--error-text)' : '#cccccc'
             }}
           >
             {item.content}
@@ -132,7 +132,7 @@ export default function REPL() {
             style={{
               flex: 1,
               backgroundColor: 'transparent',
-              color: '#f0f0f0',
+              color: 'var(--terminal-text)',
               border: 'none',
               outline: 'none',
               resize: 'none',

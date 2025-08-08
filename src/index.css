@@ -5,6 +5,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--text-color);
+  background: var(--main-bg);
 }
 
 code {
@@ -12,6 +14,50 @@ code {
     monospace;
 }
 
+/* LIGHT THEME (default) */
 :root {
   --main-bg: #e0e4e7;
+  --panel-bg: #ffffff;
+  --panel-border: #e0e4e7;
+  --text-color: #000000;
+  --button-run-bg: #75D97A;
+  --button-stop-bg: #FF7F3F;
+  --terminal-bg: #1e1e1e; /* Keep REPL dark even in light theme */
+  --terminal-text: #f0f0f0;
+  --muted-text: #6c757d;
+  --highlight-bg: #e9ecef;
+  --error-text: #dc3545;
+}
+
+/* DARK THEME OVERRIDES */
+body.dark {
+  --main-bg: #121212;
+  --panel-bg: #1e1e1e;
+  --panel-border: #3c3c3c;
+  --text-color: #f0f0f0;
+  --button-run-bg: #4CAF50;
+  --button-stop-bg: #FF5722;
+  --terminal-bg: #1e1e1e;
+  --terminal-text: #f0f0f0;
+  --muted-text: #aaaaaa;
+  --highlight-bg: #333333;
+  --error-text: #ff6b6b;
+}
+
+body.dark button {
+  color: var(--text-color);
+}
+
+/* glow for buttons and icons in dark mode */
+body.dark button[title="Copy code"],
+body.dark button[title="Clear editor"],
+body.dark button[title="Toggle theme"],
+body.dark button:has(.bi-moon),
+body.dark button:has(.bi-sun) {
+  box-shadow: 0 0 4px rgba(255,255,255,0.4);
+}
+
+body.dark .bi {
+  color: var(--text-color);
+  filter: drop-shadow(0 0 2px #ffffff);
 }

@@ -1,7 +1,7 @@
 .regButton {
   padding: 0.5rem 4rem;
   background: var(--main-bg);
-  border: none;
+  border: 1px solid var(--panel-border);
   border-radius: 4px;
   cursor: pointer;
   align-self: flex-start;
