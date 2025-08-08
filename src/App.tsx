@@ -4,7 +4,7 @@ import OutputTabs from './components/OutputTabs'
 import Buttons from './components/Buttons'
 import ThemeSwitch from './components/ThemeSwitch'
 import { COLORS } from './colors';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { usePython } from 'react-py';
 
 const DEFAULT_CODE = `# sample code  
@@ -19,10 +19,17 @@ print(np.random.rand(3,2), "\\n")
 my_seq = Seq("AGTACACTGGT")
 print(my_seq)`;
 
+const DEFAULT_FILES = [
+  {
+    name: 'main.py',
+    code: DEFAULT_CODE
+  }
+];
+
 
 function App() {
-
-  const [code, setCode] = useState(DEFAULT_CODE);
+  const [files, setFiles] = useState(DEFAULT_FILES);
+  const [activeFile, setActiveFile] = useState('main.py');
   const {
     runPython,
     stdout,
@@ -32,33 +39,52 @@ function App() {
     interruptExecution,
     isAwaitingInput,
     prompt,
-    sendInput
+    sendInput,
+    writeFile,
   } = usePython();
 
-  const run = async () => {
-    console.log('Running code...');
-    await runPython(code); 
+const run = async () => {
+  console.log('Running code...');
+  
+  // Write all files to the virtual filesystem
+  files.forEach(file => {
+    writeFile(file.name, file.code);
+  });
+
+  const currentFile = files.find(f => f.name === activeFile);
+  console.log('Current file:', currentFile?.name);
+  if (currentFile) {
+    await runPython(currentFile.code);
+  }
+};
+
+  const handleCodeChange = (newCode: string) => {
+    setFiles(files.map(file =>
+      file.name === activeFile ? { ...file, code: newCode } : file
+    ));
+
+  }
+  
+  const activeFileCode = files.find(file => file.name === activeFile)?.code || '';
+
+  const addFile = () => {
+    const newFileName = `file_${files.length + 1}.py`;
+    setFiles([...files, { name: newFileName, code: '# New file' }]);
+    setActiveFile(newFileName);
   };
 
-  useEffect(() => {
-    // Wait until pyodide is loaded (react-py exposes it on `window.pyodide`)
-    const waitForPyodide = async () => {
-      while (typeof (window as any).pyodide === 'undefined') {
-        await new Promise((res) => setTimeout(res, 100));
-      }
+  const removeFile = (name: string) => {
+    if (files.length <= 1) return; // Don't remove the last file
+    if (name === 'main.py') return; // Don't remove main.py
 
-      try {
-        console.log('Loading pyodide-http...');
-        await (window as any).pyodide.loadPackage('pyodide-http');
-        console.log('pyodide-http loaded ✅');
-      } catch (err) {
-        console.error('Failed to load pyodide-http', err);
-      }
-    };
+    const newFiles = files.filter(file => file.name !== name);
+    setFiles(newFiles);
 
-    waitForPyodide();
-  }, []);
-
+    // If we removed the active file, switch to main.py
+    if (activeFile === name) {
+      setActiveFile('main.py');
+    }
+  };
 
 
   return (
@@ -69,8 +95,8 @@ function App() {
           {/* Toolbar */}
           <div style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Buttons
-              code={code}
-              onCodeChange={setCode}
+              code={activeFileCode}
+              onCodeChange={handleCodeChange}
               onRun={run}
               onInterrupt={interruptExecution}
               isRunning={isRunning}
@@ -99,9 +125,16 @@ function App() {
             )}
             <div style={{ width: '60%' }}>
               {/* TO-DO: accounting for file types... */}
+              <FileSystem
+                files={files}
+                activeFile={activeFile}
+                onFileSelect={setActiveFile}
+                onAddFile={addFile}
+                onRemoveFile={removeFile}
+              />
               <Codeblock
-                code={code}
-                onCodeChange={setCode}
+                code={activeFileCode}
+                onCodeChange={handleCodeChange}
               />
             </div>
             <div style={{ width: '40%' }}>
@@ -112,6 +145,6 @@ function App() {
       </div>
     </PythonProvider>
   );
-}
 
+}
 export default App;

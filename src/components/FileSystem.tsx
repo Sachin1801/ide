@@ -1,16 +1,18 @@
-import { useState, useEffect } from 'react';
+import { Tab } from '@headlessui/react';
+import clsx from 'clsx';
 
-export const FILE_TYPES = ['py', 'txt', 'csv', 'png', 'jpg'] as const;
+interface FileTab {
+  name: string;
+  code: string;
+}
 
-//TO-DO: fix error loading file when file loading.
-
-type FileItem = {
-    id: string;
-    name: string;
-    path: string;
-    type: typeof FILE_TYPES[number];
-};
-
+interface FileSystemProps {
+  files: FileTab[];
+  activeFile: string;
+  onFileSelect: (name: string) => void;
+  onAddFile: () => void;
+  onRemoveFile: (name: string) => void;
+}
 
 export default function FileSystem({
     onSelectFile,
