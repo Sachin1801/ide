@@ -1,5 +1,4 @@
-import { Tab } from '@headlessui/react';
-import clsx from 'clsx';
+import { useState } from 'react';
 
 interface FileTab {
   name: string;
@@ -15,54 +14,23 @@ interface FileSystemProps {
 }
 
 export default function FileSystem({
-    onSelectFile,
-    currentFile,
-    pythonFS
-}: {
-    onSelectFile: (path: string, type: typeof FILE_TYPES[number]) => void;
-    currentFile: string;
-    pythonFS: {
-        readFile: (name: string) => Promise<void> | undefined;
-        writeFile: (name: string, data: string | Uint8Array) => Promise<void> | undefined;
-    };
-}) {
-    const [files, setFiles] = useState<FileItem[]>([
-        { id: '1', name: 'main.py', path: '/main.py', type: 'py' },
-    ]);
-
-    const [newFileName, setNewFileName] = useState('');
+    files,
+    activeFile,
+    onFileSelect,
+    onAddFile,
+    onRemoveFile
+}: FileSystemProps) {
     const [showNewFileInput, setShowNewFileInput] = useState(false);
+    const [newFileName, setNewFileName] = useState('');
 
-    // Initialize with main.py selected
-    useEffect(() => {
-        onSelectFile('/main.py', 'py');
-    }, [onSelectFile]);
-
-    const createFile = async () => {
-        const fileName = newFileName.endsWith('.py') ? newFileName : `${newFileName}.py`;
-        const filePath = `/${fileName}`;
-
-        await pythonFS.writeFile(filePath, '# New Python file\n');
-        setFiles([...files, {
-            id: Date.now().toString(),
-            name: fileName,
-            path: filePath,
-            type: 'py'
-        }]);
-        setNewFileName('');
-        setShowNewFileInput(false);
-    };
-
-    const getFileIcon = (type: string) => {
-        switch (type) {
-            case 'py': return <i className="bi bi-filetype-py"></i>;
-            case 'txt': return <i className="bi bi-filetype-txt"></i>;
-            case 'csv': return <i className="bi bi-filetype-csv"></i>;
-            case 'png': return <i className="bi bi-filetype-png"></i>;
-            case 'jpg': return <i className="bi bi-filetype-jpg"></i>;
-            default: return <i className="bi bi-file-earmark"></i>;
+    const handleAddFile = () => {
+        if (newFileName.trim()) {
+            onAddFile();
+            setNewFileName('');
+            setShowNewFileInput(false);
         }
     };
+
 
     return (
         <div>
@@ -76,8 +44,14 @@ export default function FileSystem({
                 <button
                     onClick={() => setShowNewFileInput(true)}
                     title="New Python file"
+                    style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        cursor: 'pointer',
+                        fontSize: '1.2rem'
+                    }}
                 >
-                    <i className="bi bi-file-plus"></i>
+                    +
                 </button>
             </div>
 
@@ -88,8 +62,13 @@ export default function FileSystem({
                         value={newFileName}
                         onChange={(e) => setNewFileName(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter') createFile();
-                            if (e.key === 'Escape') setShowNewFileInput(false);
+                            if (e.key === 'Enter') {
+                                handleAddFile();
+                            }
+                            if (e.key === 'Escape') {
+                                setShowNewFileInput(false);
+                                setNewFileName('');
+                            }
                         }}
                         placeholder="new_script.py"
                         style={{ width: '100%' }}
@@ -99,35 +78,34 @@ export default function FileSystem({
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                {files.map((file) => (
+                {files.map((file: FileTab, index) => (
                     <div
-                        key={file.id}
+                        key={index}
                         style={{
                             display: 'flex',
                             alignItems: 'center',
                             padding: '0.25rem 0',
                             cursor: 'pointer',
-                            backgroundColor: currentFile === file.path ? 'var(--highlight-bg)' : 'transparent'
+                            backgroundColor: activeFile === file.name ? '#e0e0e0' : 'transparent'
                         }}
-                        onClick={() => onSelectFile(file.path, file.type)}
+                        onClick={() => onFileSelect(file.name)}
                     >
-                        <span style={{ marginRight: '0.5rem' }}>
-                            {getFileIcon(file.type)}
-                        </span>
+                        <span style={{ marginRight: '0.5rem' }}>📄</span>
                         <span style={{ flex: 1 }}>{file.name}</span>
-                        {file.type === 'py' && file.path !== '/main.py' && (
+                        {file.name !== 'main.py' && (
                             <button
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    pythonFS.writeFile(file.path, '');
-                                    setFiles(files.filter(f => f.id !== file.id));
-                                    if (currentFile === file.path) {
-                                        onSelectFile('/main.py', 'py');
-                                    }
+                                    onRemoveFile(file.name);
                                 }}
                                 title="Delete file"
+                                style={{ 
+                                    background: 'none', 
+                                    border: 'none', 
+                                    cursor: 'pointer' 
+                                }}
                             >
-                                <i className="bi bi-trash"></i>
+                                ×
                             </button>
                         )}
                     </div>

@@ -3,6 +3,7 @@ import Codeblock from './components/Codeblock'
 import OutputTabs from './components/OutputTabs'
 import Buttons from './components/Buttons'
 import ThemeSwitch from './components/ThemeSwitch'
+import FileSystem from './components/FileSystem'
 import { COLORS } from './colors';
 import { useState } from 'react';
 import { usePython } from 'react-py';
